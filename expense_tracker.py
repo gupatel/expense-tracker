@@ -50,6 +50,30 @@ def delete_expense(expenses):
         except ValueError:
             print("Please enter a valid number.")
 
+# Edit expense
+def edit_expense(expenses):
+    view_expenses(expenses)
+    if expenses:
+        try:
+            num = int(input("Enter expense number to edit: "))
+            if 1 <= num <= len(expenses):
+                exp = expenses[num-1]
+                print(f"Editing: {exp['title']} - ${exp['amount']}")
+                new_title = input("Enter new title (or press Enter to keep same): ")
+                new_amount = input("Enter new amount (or press Enter to keep same): ")
+
+                if new_title.strip():
+                    exp['title'] = new_title
+                if new_amount.strip():
+                    exp['amount'] = float(new_amount)
+
+                save_expenses(expenses)
+                print("✏️ Expense updated!")
+            else:
+                print("Invalid number.")
+        except ValueError:
+            print("Please enter a valid number.")
+
 # Main program
 def main():
     expenses = load_expenses()
@@ -59,7 +83,8 @@ def main():
         print("1. Add Expense")
         print("2. View Expenses")
         print("3. Delete Expense")
-        print("4. Exit")
+        print("4. Edit Expense")
+        print("5. Exit")
 
         choice = input("Choose an option: ")
 
@@ -70,6 +95,8 @@ def main():
         elif choice == "3":
             delete_expense(expenses)
         elif choice == "4":
+            edit_expense(expenses)
+        elif choice == "5":
             print("Goodbye 👋")
             break
         else:
