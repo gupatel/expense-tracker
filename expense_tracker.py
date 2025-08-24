@@ -1,12 +1,30 @@
-﻿expenses = []
+﻿import json
+import os
 
-def add_expense():
+FILE_NAME = "expenses.json"
+
+# Load existing expenses from file
+def load_expenses():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as f:
+            return json.load(f)
+    return []
+
+# Save expenses to file
+def save_expenses(expenses):
+    with open(FILE_NAME, "w") as f:
+        json.dump(expenses, f, indent=4)
+
+# Add new expense
+def add_expense(expenses):
     title = input("Enter expense title: ")
     amount = float(input("Enter amount: "))
     expenses.append({"title": title, "amount": amount})
+    save_expenses(expenses)
     print("✅ Expense added!")
 
-def view_expenses():
+# View expenses
+def view_expenses(expenses):
     if not expenses:
         print("No expenses yet.")
     else:
@@ -17,20 +35,25 @@ def view_expenses():
             total += e['amount']
         print(f"---\nTotal: ${total}")
 
-def delete_expense():
-    view_expenses()
+# Delete expense
+def delete_expense(expenses):
+    view_expenses(expenses)
     if expenses:
         try:
             num = int(input("Enter expense number to delete: "))
             if 1 <= num <= len(expenses):
                 removed = expenses.pop(num-1)
+                save_expenses(expenses)
                 print(f"🗑️ Deleted {removed['title']} - ${removed['amount']}")
             else:
                 print("Invalid number.")
         except ValueError:
             print("Please enter a valid number.")
 
+# Main program
 def main():
+    expenses = load_expenses()
+
     while True:
         print("\n=== Expense Tracker ===")
         print("1. Add Expense")
@@ -41,11 +64,11 @@ def main():
         choice = input("Choose an option: ")
 
         if choice == "1":
-            add_expense()
+            add_expense(expenses)
         elif choice == "2":
-            view_expenses()
+            view_expenses(expenses)
         elif choice == "3":
-            delete_expense()
+            delete_expense(expenses)
         elif choice == "4":
             print("Goodbye 👋")
             break
